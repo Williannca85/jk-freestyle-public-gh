@@ -38,16 +38,16 @@
     </footer>
 
     <script>
-        document.getElementById('deploy-date').textContent = new Date().toLocaleString('pt-BR');
-        
-        function simulateBuild() {
-            document.getElementById('build-status').innerHTML = '✅ Build #' + Date.now() + ' executado com sucesso!';
-            document.getElementById('build-status').style.background = '#0bed69';
-            document.getElementById('build-status').style.color = '#181b1e';
-            setTimeout(() => {
-                location.reload();
-            }, 2000);
-        }
+    fetch('/build-info.json')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('build-number').textContent = data.buildNumber;
+            document.getElementById('build-number-img').textContent = data.buildNumber;
+            document.getElementById('deploy-date').textContent = data.deployDate;
+        })
+        .catch(() => {
+            document.getElementById('build-number').textContent = 'Não disponível';
+        });
     </script>
 </body>
 </html>
