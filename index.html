@@ -14,40 +14,56 @@
         <h2>Pipeline CI/CD com Jenkins | Docker | GitHub</h2>
     </header>
 
-    <section class="status-section">
+    <section>
         <h3>📊 Status do Pipeline</h3>
-        <div id="build-status" class="card">
-            Build #${BUILD_NUMBER} - ✅ Sucesso!
+        <div id="status-card" class="card">
+            Carregando...
         </div>
         <button onclick="simulateBuild()">🔄 Simular Build</button>
     </section>
 
-    <section class="info-section">
+    <section>
         <h3>📈 Estatísticas do Pipeline</h3>
-        <div class="card">
-            <p>✅ Total de Builds: <strong>${BUILD_NUMBER}</strong></p>
-            <p>🐳 Imagem Docker: <strong>webapp:${BUILD_NUMBER}</strong></p>
-            <p>📅 Último Deploy: <strong id="deploy-date"></strong></p>
+        <div id="stats-card" class="card">
+            Carregando...
         </div>
     </section>
 
     <footer>
         <p>© 2025 Willian NCA - The Cloud Bootcamp</p>
-        <p>🔗 <a href="https://linkedin.com/in/williannca" target="_blank">LinkedIn</a> | 
-           📧 williannca@devops.com</p>
+        <p>🔗 LinkedIn: williannca | 📧 williannca@devops.com</p>
     </footer>
 
     <script>
-    fetch('/build-info.json')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('build-number').textContent = data.buildNumber;
-            document.getElementById('build-number-img').textContent = data.buildNumber;
-            document.getElementById('deploy-date').textContent = data.deployDate;
-        })
-        .catch(() => {
-            document.getElementById('build-number').textContent = 'Não disponível';
-        });
+        function simulateBuild() {
+            alert('Build simulado! O Jenkins executaria um novo pipeline.');
+            location.reload();
+        }
+
+        // Buscar as informações do build-info.json
+        fetch('/build-info.json')
+            .then(response => response.json())
+            .then(data => {
+                // Atualizar Status do Pipeline
+                document.getElementById('status-card').innerHTML = `
+                    ✅ Build #${data.buildNumber} - Sucesso!
+                    <br>
+                    <small>Deploy: ${data.deployDate}</small>
+                `;
+                
+                // Atualizar Estatísticas
+                document.getElementById('stats-card').innerHTML = `
+                    <p>✅ Total de Builds: <strong>${data.buildNumber}</strong></p>
+                    <p>✅ Imagem Docker: <strong>webapp:${data.buildNumber}</strong></p>
+                    <p>✅ Último Deploy: <strong>${data.deployDate}</strong></p>
+                    <p>✅ Status: <strong style="color:#0bed69">${data.status}</strong></p>
+                `;
+            })
+            .catch(error => {
+                console.error('Erro ao carregar build-info:', error);
+                document.getElementById('status-card').innerHTML = '⚠️ Build info não disponível';
+                document.getElementById('stats-card').innerHTML = '⚠️ Execute o pipeline no Jenkins';
+            });
     </script>
 </body>
 </html>
